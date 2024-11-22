@@ -1,28 +1,33 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styles from './Dropdown.module.css';
 
 type DropdownProps = {
-  items: string[] | number[]; // Array of dropdown items (strings)
+  items: (string | number)[]; // Array of dropdown items (strings or numbers)
   onSelect: (item: string | number) => void; // Callback for when an item is selected
 };
 
 const Dropdown: React.FC<DropdownProps> = ({ items, onSelect }) => {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
-  const [selectedItem, setSelectedItem] = React.useState<string | null>(null);
-  const dropdownRef = React.useRef(null);
+  const [selectedItem, setSelectedItem] = React.useState<
+    string | number | null
+  >(null);
+  const dropdownRef = React.useRef<HTMLDivElement>(null); // Explicitly type the ref as HTMLDivElement
 
   const toggleDropdown = (): void => {
     setIsOpen(!isOpen);
   };
 
-  const handleSelect = (item: string): void => {
+  const handleSelect = (item: string | number): void => {
     setSelectedItem(item);
     onSelect(item);
     setIsOpen(false);
   };
 
-  const handleClickOutside = (event: Event) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+  const handleClickOutside = (event: MouseEvent): void => {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target as Node)
+    ) {
       setIsOpen(false);
     }
   };
